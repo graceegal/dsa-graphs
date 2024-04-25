@@ -10,31 +10,29 @@ import { Queue } from "../common/queue";
 // if no path available from start to end node, return Infinity
 // SOUGHT = H
 function fewestEdges(start: UGraphNodeStr, sought: UGraphNodeStr): number {
-  let fewest = 1;                           // 4
-  let toVisit = new Queue([start, fewest]);     // [[I, 1], [H, 1], [I, 2], [H, 2]]
-  let visited = new Set();                // [R, T, I]
+  // let fewest = 1;                           // 4
+  let toVisit = new Queue<[UGraphNodeStr, number]>([[start, 0]]);//[  [T,2], [H,2]]
+  let visited = new Set();//[R,I, T, H]
 
   while (!toVisit.isEmpty()) {
 
-    let node = toVisit.dequeue();     // node = [I, 1]
+    let [node, numEdges] = toVisit.dequeue(); // H, 1
 
-    if (!visited.has(node[0])) {
-      visited.add(node[0]);
-      if (node[0] === sought) {
-        return node[1];
+    if (!visited.has(node)) {
+      visited.add(node);
+      if (node === sought) {
+        return numEdges;
       }
     }
 
-    for (const n of node[0].adjacent) {      // [R, T]
+    for (const n of node.adjacent) {      // [H]
       if (!visited.has(n)) {
-        toVisit.enqueue([n, fewest]);
+        toVisit.enqueue([n, numEdges + 1]);
       }
     }
 
-    fewest++;
   }
-
-  return fewest;
+  return Infinity;
 }
 
 export { fewestEdges };
